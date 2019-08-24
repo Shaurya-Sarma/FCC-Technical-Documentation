@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Django Technical Documentation</title>
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/themes/prism.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <meta charset="UTF-8">
+        <meta name="description" content="Redesign of Django Documentation page">
+        <meta name="keywords" content="Django, Documentation, Redesign">
+        <meta name="author" content="Shaurya Sarma">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <main id="main-doc">
+            <header id="main-header">
+                <div id="collaspe-container">
+                    <div id="alt-navbar">
+                        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                        <a href="#Django_at_a_glance">Django at a glance</a>
+                        <a href="#Design_your_model">Design your model</a>
+                        <a href="#Install_it">Install it</a>
+                        <a href="#Enjoy_the_free_API" >Enjoy the free API</a>
+                        <a href="#Dynamic_admin_interface" >Dynamic admin interface</a>
+                        <a href="#Design_your_URLs">Design your URLs</a>
+                        <a href="#Write_your_views" >Write your views</a>
+                        <a href="#Design_your_templates" >Design your templates</a>
+                        <a href="#This_is_just_the_surface" >This is just the surface</a>
+                    </div>
+                    <div id="fixed-header">
+                        <a href="javascript:void(0);" class="icon" onclick="openNav()">
+                            <i class="fa fa-bars"></i>
+                        </a>
+                    </div>   
+                </div>
+                <nav id="navbar">
+                    <header id="nav-header">Django Documentation</header>
+                    <a href="#Django_at_a_glance" class="nav-link">Django at a glance</a>
+                    <a href="#Design_your_model" class="nav-link">Design your model</a>
+                    <a href="#Install_it" class="nav-link">Install it</a>
+                    <a href="#Enjoy_the_free_API" class="nav-link">Enjoy the free API</a>
+                    <a href="#Dynamic_admin_interface" class="nav-link">Dynamic admin interface</a>
+                    <a href="#Design_your_URLs" class="nav-link">Design your URLs</a>
+                    <a href="#Write_your_views" class="nav-link">Write your views</a>
+                    <a href="#Design_your_templates" class="nav-link">Design your templates</a>
+                    <a href="#This_is_just_the_surface" class="nav-link">This is just the surface</a>
+                    <footer id="footer">
+                        <span id="credit">Created By Shaurya Sarma | Source: <a href="https://docs.djangoproject.com/en/2.2/intro/overview/#" target="_blank" id='reference'>Django Documentation</a></span>
+                    </footer>
+                </nav>
+            </header>
+
+            <section class="main-section" id="Django_at_a_glance"> 
+                <header class="section-header">Django at a glance</header>
+                <article>
+                    <p>Because Django was developed in a fast-paced newsroom environment, 
+                    it was designed to make common Web-development tasks fast and easy. 
+                    Here’s an informal overview of how to write a database-driven Web app 
+                    with Django.</p>
+                    <p> The goal of this document is to give you enough technical 
+                    specifics to understand how Django works, but this isn’t intended to be a 
+                    tutorial or reference – but we’ve got both! When you’re ready to start a 
+                    project, you can start with the tutorial or dive right into more detailed 
+                    documentation.</p>
+                </article>
+            </section>
+
+            <section class="main-section" id="Design_your_model"> 
+                <header class="section-header">Design your model</header>
+                <article>
+                    <p>Although you can use Django without a database, it comes with an object-relational
+                    mapper in which you describe your database layout in Python code. The data-model syntax 
+                    offers many rich ways of representing your models – so far, it’s been solving many years’ 
+                    worth of database-schema problems. Here’s a quick example:</p>
+                    <figure><pre><code class="language-css">
+                        from django.db import models
+
+                        class Reporter(models.Model):
+                            full_name = models.CharField(max_length=70)
+                        
+                            def __str__(self):
+                                return self.full_name
+                        
+                        class Article(models.Model):
+                            pub_date = models.DateField()
+                            headline = models.CharField(max_length=200)
+                            content = models.TextField()
+                            reporter = models.ForeignKey(Reporter, on_delete=models.CASCADE)
+                        
+                            def __str__(self):
+                                return self.headline
+                        </code></pre></figure>
+                </article>
+                <hr>
+            </section>
+
+            <section class="main-section" id="Install_it"> 
+                <header class="section-header">Install it</header>
+                <article>
+                    <p>Next, run the Django command-line utilities to create the database tables 
+                    automatically:</p>
+                    <figure><pre><code class="language-css">
+                        $ python manage.py makemigrations
+                        $ python manage.py migrate
+                    </code></pre></figure>
+                    <p>The makemigrations command looks at all your available models and creates 
+                    migrations for whichever tables don’t already exist. migrate runs the migrations
+                    and creates tables in your database, as well as optionally providing much richer 
+                    schema control.</p>
+                </article>
+                <hr>
+            </section>
+
+            <section class="main-section" id="Enjoy_the_free_API"> 
+                <header class="section-header">Enjoy the free API</header>
+                <article>
+                    <p>With that, you’ve got a free, and rich, Python API to access your data. 
+                    The API is created on the fly, no code generation necessary:</p>
+                    <figure><pre><code class="language-css">
+                        # Import the models we created from our "news" app
+                        >>> from news.models import Article, Reporter
+                        
+                        # No reporters are in the system yet.
+                        >>> Reporter.objects.all()
+                        &ltQuerySet []&gt
+                        
+                        # Create a new Reporter.
+                        >>> r = Reporter(full_name='John Smith')
+                        
+                        # Save the object into the database. You have to call save() explicitly.
+                        >>> r.save()
+                        
+                        # Now it has an ID.
+                        >>> r.id
+                        1
+                        
+                        # Now the new reporter is in the database.
+                        >>> Reporter.objects.all()
+                        &ltQuerySet [&ltReporter: John Smith&gt]&gt
+                        
+                        # Fields are represented as attributes on the Python object.
+                        >>> r.full_name
+                        'John Smith'
+                        
+                        # Django provides a rich database lookup API.
+                        >>> Reporter.objects.get(id=1)
+                        &ltReporter: John Smith&gt
+                        >>> Reporter.objects.get(full_name__startswith='John')
+                        &ltReporter: John Smith&gt
+                        >>> Reporter.objects.get(full_name__contains='mith')
+                        &ltReporter: John Smith&gt
+                        >>> Reporter.objects.get(id=2)
+                        Traceback (most recent call last):
+                            ...
+                        DoesNotExist: Reporter matching query does not exist.
+                        
+                        # Create an article.
+                        >>> from datetime import date
+                        >>> a = Article(pub_date=date.today(), headline='Django is cool',
+                        ...     content='Yeah.', reporter=r)
+                        >>> a.save()
+                        
+                        # Now the article is in the database.
+                        >>> Article.objects.all()
+                        &ltQuerySet [&ltArticle: Django is cool&gt]&gt
+                        
+                        # Article objects get API access to related Reporter objects.
+                        >>> r = a.reporter
+                        >>> r.full_name
+                        'John Smith'
+                        
+                        # And vice versa: Reporter objects get API access to Article objects.
+                        >>> r.article_set.all()
+                        &ltQuerySet [&ltArticle: Django is cool&gt]&gt
+                        
+                        # The API follows relationships as far as you need, performing efficient
+                        # JOINs for you behind the scenes.
+                        # This finds all articles by a reporter whose name starts with "John".
+                        >>> Article.objects.filter(reporter__full_name__startswith='John')
+                        &ltQuerySet [&ltArticle: Django is cool&gt]&gt
+                        
+                        # Change an object by altering its attributes and calling save().
+                        >>> r.full_name = 'Billy Goat'
+                        >>> r.save()
+                        
+                        # Delete an object with delete().
+                        >>> r.delete()
+                    </code></pre></figure>
+                </article>
+                <hr>
+            </section>
+
+            <section class="main-section" id="Dynamic_admin_interface"> 
+                <header class="section-header">Dynamic admin interface</header>
+                <article>
+                    <p>Once your models are defined, Django can automatically create a professional, 
+                    production ready administrative interface – a website that lets authenticated 
+                    users add, change and delete objects. It’s as easy as registering your model in 
+                    the admin site:</p>
+                    <figure><pre><code class="language-css">
+                        from django.db import models
+
+                        class Article(models.Model):
+                            pub_date = models.DateField()
+                            headline = models.CharField(max_length=200)
+                            content = models.TextField()
+                            reporter = models.ForeignKey(Reporter, on_delete=models.CASCADE)
+                    </code></pre></figure>
+                    <figure><pre><code class="language-css">
+                        from django.contrib import admin
+
+                        from . import models
+                        
+                        admin.site.register(models.Article)    
+                    </code></pre></figure>
+                    <p>The philosophy here is that your site is edited by a staff, or a client, or 
+                    maybe just you – and you don’t want to have to deal with creating backend 
+                    interfaces just to manage content. One typical workflow in creating Django apps 
+                    is to create models and get the admin sites up and running as fast as possible, 
+                    so your staff (or clients) can start populating data. Then, develop the way data 
+                    is presented to the public.</p>
+                </article>
+                <hr>
+            </section>
+
+            <section class="main-section" id="Design_your_URLs"> 
+                <header class="section-header">Design your URLs</header>
+                <article>
+                    <p>A clean, elegant URL scheme is an important detail in a high-quality Web
+                    application. Django encourages beautiful URL design and doesn’t put any cruft in 
+                    URLs, like .php or .asp.</p>
+                    <p>To design URLs for an app, you create a Python module called a URLconf. A table 
+                    of contents for your app, it contains a simple mapping between URL patterns and Python
+                    callback functions. URLconfs also serve to decouple URLs from Python code.</p>
+                    <p>Here’s what a URLconf might look like for the Reporter/Article example above:</p>
+                    <figure><pre><code class="language-css">
+                        from django.urls import path
+
+                        from . import views
+                        
+                        urlpatterns = [
+                            path('articles/&ltint:year&gt/', views.year_archive),
+                            path('articles/&ltint:year&gt/&ltint:month&gt/', views.month_archive),
+                            path('articles/&ltint:year&gt/&ltint:month&gt/&ltint:pk&gt/', views.article_detail),
+                        ]
+                    </code></pre></figure>
+                    <p>The code above maps URL paths to Python callback functions (“views”). The path 
+                    strings use parameter tags to “capture” values from the URLs. When a user requests a
+                    page, Django runs through each path, in order, and stops at the first one that
+                    matches the requested URL. (If none of them matches, Django calls a special-case 
+                    404 view.) This is blazingly fast, because the paths are compiled into regular 
+                    expressions at load time.</p>
+                    <p>Once one of the URL patterns matches, Django calls the given view, which is a 
+                    Python function. Each view gets passed a request object – which contains request 
+                    metadata – and the values captured in the pattern.</p>
+                    <p>For example, if a user requested the URL “/articles/2005/05/39323/”, Django would
+                    call the function news.views.article_detail(request, year=2005, month=5, pk=39323).</p>
+                </article>
+                <hr>
+            </section>
+            
+            <section class="main-section" id="Write_your_views"> 
+                <header class="section-header">Write your views</header>
+                <article>
+                    <p>Each view is responsible for doing one of two things: Returning an HttpResponse 
+                    object containing the content for the requested page, or raising an exception such 
+                    as Http404. The rest is up to you.</p>
+                    <p>Generally, a view retrieves data according to the parameters, loads a template 
+                    and renders the template with the retrieved data. Here’s an example view for 
+                    year_archive from above:</p>
+                    <figure><pre><code class="language-css"> 
+                        from django.shortcuts import render
+
+                        from .models import Article
+                        
+                        def year_archive(request, year):
+                            a_list = Article.objects.filter(pub_date__year=year)
+                            context = {'year': year, 'article_list': a_list}
+                            return render(request, 'news/year_archive.html', context)
+                    </code></pre></figure>
+                    <p>This example uses Django’s template system, which has several powerful features 
+                    but strives to stay simple enough for non-programmers to use.</p>
+                </article>
+                <hr>
+            </section>
+
+            <section class="main-section" id="Design_your_templates"> 
+                <header class="section-header">Design your templates</header>
+                <article>
+                    <p>The code above loads the news/year_archive.html template.</p>
+                    <p>Django has a template search path, which allows you to minimize redundancy 
+                    among templates. In your Django settings, you specify a list of directories to 
+                    check for templates with DIRS. If a template doesn’t exist in the first directory,
+                    it checks the second, and so on.</p>
+                    <p>Let’s say the news/year_archive.html template was found. Here’s what that might
+                    look like:</p>
+                    <figure><pre><code class="language-css">
+                        {% extends "base.html" %}
+
+                        {% block title %}Articles for {{ year }}{% endblock %}
+                        
+                        {% block content %}
+                        &lth1&gtArticles for {{ year }}&lt/h1&gt
+                        
+                        {% for article in article_list %}
+                            &ltp&gt{{ article.headline }}&lt/p&gt
+                            &ltp&gtBy {{ article.reporter.full_name }}&lt/p&gt
+                            &ltp&gtPublished {{ article.pub_date|date:"F j, Y" }}&lt/p&gt
+                        {% endfor %}
+                        {% endblock %}
+                    </code></pre></figure>
+                    <p>Variables are surrounded by double-curly braces. {{ article.headline }} means 
+                    “Output the value of the article’s headline attribute.” But dots aren’t used only 
+                    for attribute lookup. They also can do dictionary-key lookup, index lookup and 
+                    function calls.</p>
+                    <p>Note {{ article.pub_date|date:"F j, Y" }} uses a Unix-style “pipe” (the “|” 
+                    character). This is called a template filter, and it’s a way to filter the value 
+                    of a variable. In this case, the date filter formats a Python datetime object in the
+                    given format (as found in PHP’s date function).</p>
+                    <p>You can chain together as many filters as you’d like. You can write custom template
+                    filters. You can write custom template tags, which run custom Python code behind the 
+                    scenes.</p>
+                    <p>Finally, Django uses the concept of “template inheritance”. That’s what the 
+                    {% extends "base.html" %} does. It means “First load the template called ‘base’, 
+                    which has defined a bunch of blocks, and fill the blocks with the following blocks.”
+                    In short, that lets you dramatically cut down on redundancy in templates: each 
+                    template has to define only what’s unique to that template.</p>
+                    <p>Here’s what the “base.html” template, including the use of static files, 
+                    might look like:</p>
+                    <figure><pre><code class="language-css">
+                        {% load static %}
+                        &lthtml&gt
+                        &lthead&gt
+                            &lttitle&gt{% block title %}{% endblock %}&lt/title&gt
+                        &lt/head&gt
+                        &ltbody&gt
+                            &ltimg src="{% static "images/sitelogo.png" %}" alt="Logo"&gt
+                            {% block content %}{% endblock %}
+                        &lt/body&gt
+                        &lt/html&gt
+                    </code></pre></figure>
+                    <p>Simplistically, it defines the look-and-feel of the site (with the site’s logo), 
+                    and provides “holes” for child templates to fill. This makes a site redesign as 
+                    easy as changing a single file – the base template.</p>
+                    <p>It also lets you create multiple versions of a site, with different base templates,
+                    while reusing child templates. Django’s creators have used this technique to create 
+                    strikingly different mobile versions of sites – simply by creating a new base template.</p>
+                    <p>Note that you don’t have to use Django’s template system if you prefer another 
+                    system. While Django’s template system is particularly well-integrated with Django’s
+                    model layer, nothing forces you to use it. For that matter, you don’t have to use 
+                    Django’s database API, either. You can use another database abstraction layer, you 
+                    can read XML files, you can read files off disk, or anything you want. Each piece 
+                    of Django – models, views, templates – is decoupled from the next.</p>
+                </article>
+                <hr>
+            </section>
+
+            <section class="main-section" id="This_is_just_the_surface"> 
+                <header class="section-header">This is just the surface</header>
+                <article>
+                    <p>This has been only a quick overview of Django’s functionality. Some more 
+                    useful features:</p>
+                    <ul>
+                        <li>A caching framework that integrates with memcached or other backends.</li>
+                        <li>A syndication framework that makes creating RSS and Atom feeds as easy as 
+                        writing a small Python class.</li>
+                        <li>More attractive automatically-generated admin features – this overview 
+                        barely scratched the surface.</li>
+                        <li>Connect a multitude of devices and servers via HTTP requests.</li>
+                        <li>And much more!</li>
+                    </ul>
+                    <p>The next obvious steps are for you to download Django, read the tutorial 
+                    and join the community. Thanks for your interest!</p>
+                </article>
+            </section>
+
+        </main>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/prism.min.js"></script>
+        <script type="text/javascript" src="document.js"></script>
+    </body>
+</html>
